@@ -1,0 +1,171 @@
+export const items = {
+  // --- 基础生活用品 (有耐久度，但通常不因“使用”而消耗) ---
+  food_bowl: {
+    id: 'food_bowl',
+    name: '粮碗',
+    type: 'necessity',
+    price: 30,
+    durability: 100,
+    essential: true,
+  },
+  water_bowl: {
+    id: 'water_bowl',
+    name: '水碗',
+    type: 'necessity',
+    price: 30,
+    durability: 100,
+    essential: true,
+  },
+  cat_litter_box: {
+    id: 'cat_litter_box',
+    name: '猫砂盆',
+    type: 'necessity',
+    price: 80,
+    durability: 100,
+    essential: true,
+  },
+  pet_bed: {
+    id: 'pet_bed',
+    name: '宠物窝',
+    type: 'necessity',
+    price: 100,
+    durability: 100,
+    essential: true,
+  },
+  leash: {
+    id: 'leash',
+    name: '牵引绳',
+    type: 'necessity',
+    price: 60,
+    durability: 100,
+    essential: true,
+  },
+  pet_carrier: {
+    id: 'pet_carrier',
+    name: '航空箱/外出包',
+    type: 'necessity',
+    price: 150,
+    durability: 100,
+    essential: true,
+  },
+
+  // --- 清洁用品 (有使用次数) ---
+  cat_litter: {
+    id: 'cat_litter',
+    name: '猫砂',
+    type: 'consumable',
+    price: 40,
+    uses: 10,
+    essential: true,
+  },
+  poop_bags: {
+    id: 'poop_bags',
+    name: '拾便袋',
+    type: 'consumable',
+    price: 15,
+    uses: 50,
+    essential: true,
+  },
+  pet_shampoo: {
+    id: 'pet_shampoo',
+    name: '宠物香波',
+    type: 'consumable',
+    price: 50,
+    uses: 20,
+  },
+
+  // --- 食物 (一次性使用) ---
+  kitten_milk: {
+    id: 'kitten_milk',
+    name: '幼猫/犬奶粉',
+    type: 'food',
+    price: 50,
+    effects: { hunger: 30, health: 2 },
+    single_use: true,
+    essential: true,
+  },
+  canned_food: {
+    id: 'canned_food',
+    name: '主食罐头',
+    type: 'food',
+    price: 15,
+    effects: { hunger: 20, happiness: 5 },
+    single_use: true,
+  },
+  treats: {
+    id: 'treats',
+    name: '零食冻干',
+    type: 'food',
+    price: 40,
+    effects: { happiness: 15 },
+    uses: 20, // 改为20次
+  },
+  food_generic: {
+    id: 'food_generic',
+    name: '普通猫/狗粮',
+    type: 'food',
+    price: 10,
+    effects: {
+      hunger: 15,
+      happiness: 2,
+    },
+    uses: 15, // 改为15次
+    essential: true,
+  },
+  food_premium: {
+    id: 'food_premium',
+    name: '高级猫/狗粮',
+    type: 'food',
+    price: 30,
+    effects: {
+      hunger: 25,
+      happiness: 5,
+      health: 1,
+    },
+    uses: 25, // 改为25次
+  },
+
+  // --- 玩具 (有耐久度，会因使用而消耗) ---
+  toy_ball: {
+    id: 'toy_ball',
+    name: '普通球',
+    type: 'toy',
+    price: 20,
+    effects: {
+      happiness: 10,
+      energy: -10,
+    },
+    durability: 50,
+    essential: true,
+  },
+  toy_teaser: {
+    id: 'toy_teaser',
+    name: '逗猫棒',
+    type: 'toy',
+    price: 50,
+    effects: {
+      happiness: 25,
+      energy: -15,
+    },
+    durability: 80,
+  },
+
+  // --- 保健品 (有使用次数或一次性) ---
+  probiotics: {
+    id: 'probiotics',
+    name: '益生菌',
+    type: 'health',
+    price: 80,
+    effects: { health: 5 },
+    uses: 30,
+  },
+  flea_treatment: {
+    id: 'flea_treatment',
+    name: '驱虫药',
+    type: 'health',
+    price: 100,
+    effects: { health: 2 },
+    single_use: true,
+    essential: true,
+  },
+};
