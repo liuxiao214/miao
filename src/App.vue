@@ -54,7 +54,7 @@
 
       <div class="action-buttons">
         <button @click="openBackpack('food')"><span class="icon">🍖</span>饮食管理</button>
-        <button @click="openBackpack('toy')"><span class="icon">🎾</span>玩耍</button>
+        <button @click="openBackpack('toy')"><span class="icon">🎾</span>情感陪伴</button>
         <button @click="openBackpack('health')"><span class="icon">🩹</span>健康检测</button>
         <button @click="openBackpack('cleaning')"><span class="icon">🧹</span>清洁护理</button>
         <button @click="openBackpack('maintenance')"><span class="icon">🏠</span>环境维护</button>
@@ -65,10 +65,17 @@
     </div>
 
     <!-- 浮层场景 -->
-    <div class="modal-overlay" v-if="(gameStore.gameState === 'shopping' || gameStore.gameState === 'backpack') && gameStore.pet">
+    <div class="app-modal-overlay" v-if="(gameStore.gameState === 'shopping' || gameStore.gameState === 'backpack') && gameStore.pet">
       <Shop v-if="gameStore.gameState === 'shopping'" />
       <Backpack v-if="gameStore.gameState === 'backpack'" />
     </div>
+
+    <!-- 事件窗口 -->
+    <EventModal 
+      v-if="gameStore.gameState === 'event' && gameStore.currentEvent" 
+      :event="gameStore.currentEvent" 
+      @close="gameStore.closeEvent()" 
+    />
 
   </div>
 </template>
@@ -78,7 +85,9 @@ import { watch } from 'vue';import { useGameStore } from './store/game';
 import { items } from './game/config/items'; // 引入物品配置
 
 // Components
-import StatusBar from './components/StatusBar.vue';import CharacterSelection from './views/CharacterSelection.vue';
+import StatusBar from './components/StatusBar.vue';
+import EventModal from './components/EventModal.vue';
+import CharacterSelection from './views/CharacterSelection.vue';
 import PetSelection from './views/PetSelection.vue';
 import InitialShopping from './views/InitialShopping.vue';
 import Shop from './views/Shop.vue';
@@ -323,7 +332,7 @@ h1 {
   z-index: 1;
 }
 
-.modal-overlay {
+.app-modal-overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -339,7 +348,7 @@ h1 {
   padding-top: 50px;
 }
 
-.modal-overlay > div {
+.app-modal-overlay > div {
   pointer-events: auto;
   border-radius: 15px;
   width: 70%;

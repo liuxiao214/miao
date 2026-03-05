@@ -181,6 +181,39 @@ export const items = {
     },
     durability: 80,
   },
+  cat_scratcher: {
+    id: 'cat_scratcher',
+    name: '猫抓板',
+    type: 'toy',
+    price: 40,
+    effects: {
+      happiness: 15,
+      energy: -10,
+    },
+    durability: 100,
+  },
+  interactive_toy: {
+    id: 'interactive_toy',
+    name: '独处陪伴玩具',
+    type: 'toy',
+    price: 80,
+    effects: {
+      happiness: 12,
+      energy: -5,
+    },
+    durability: 60,
+  },
+  training_treats: {
+    id: 'training_treats',
+    name: '训练零食',
+    type: 'toy',
+    price: 60,
+    effects: {
+      happiness: 20,
+      energy: -5,
+    },
+    uses: 30,
+  },
 
   // --- 保健品 (有使用次数或一次性) ---
   probiotics: {

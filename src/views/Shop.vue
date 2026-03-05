@@ -38,7 +38,7 @@ const gameStore = useGameStore();
 const categories = [
   { id: 'all', name: '全部' },
   { id: 'food', name: '食物' },
-  { id: 'toy', name: '玩具' },
+  { id: 'toy', name: '情感陪伴' },
   { id: 'necessity', name: '生活用品' },
   { id: 'consumable', name: '消耗品' },
   { id: 'health', name: '医疗保健' },

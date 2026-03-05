@@ -2,10 +2,11 @@ import { defineStore } from 'pinia';
 import { createPet } from '../game/models/pet';
 import { useInventoryStore } from './inventory';
 import { items } from '../game/config/items';
+import { events } from '../game/config/events';
 
 export const useGameStore = defineStore('game', {
   state: () => ({
-    gameState: 'character_selection', // character_selection, pet_selection, playing, shopping, backpack
+    gameState: 'character_selection', // character_selection, pet_selection, playing, shopping, backpack, event
     inventoryFilter: null, // null, 'food', 'toy', 'health' etc.
     player: {
       money: 1000, // 初始资金
@@ -16,6 +17,8 @@ export const useGameStore = defineStore('game', {
       hour: 8,
     },
     dailyInteractions: [], // 每日互动记录
+    currentEvent: null, // 当前事件
+    eventCooldown: 0, // 事件冷却时间（小时）
   }),
 
   actions: {
@@ -57,6 +60,12 @@ export const useGameStore = defineStore('game', {
         if (this.pet.hunger < 0) this.pet.hunger = 0;
         if (this.pet.energy < 0) this.pet.energy = 0;
       }
+
+      // 更新事件冷却时间
+      this.updateEventCooldown();
+      
+      // 检查是否触发随机事件
+      this.checkRandomEvent();
     },
 
     /**
@@ -197,6 +206,48 @@ export const useGameStore = defineStore('game', {
       this.$reset(); // Pinia 内置方法，重置 state 到初始值
       const inventoryStore = useInventoryStore();
       inventoryStore.$reset();
+    },
+
+    /**
+     * 检查并触发随机事件
+     */
+    checkRandomEvent() {
+      if (this.gameState !== 'playing' || this.currentEvent || this.eventCooldown > 0) {
+        return;
+      }
+
+      // 20% 的概率触发事件
+      if (Math.random() < 0.2) {
+        this.triggerRandomEvent();
+      }
+    },
+
+    /**
+     * 触发随机事件
+     */
+    triggerRandomEvent() {
+      const randomEvent = events[Math.floor(Math.random() * events.length)];
+      this.currentEvent = randomEvent;
+      this.gameState = 'event';
+      // 设置事件冷却时间为 6 小时
+      this.eventCooldown = 6;
+    },
+
+    /**
+     * 关闭事件
+     */
+    closeEvent() {
+      this.currentEvent = null;
+      this.gameState = 'playing';
+    },
+
+    /**
+     * 更新事件冷却时间
+     */
+    updateEventCooldown() {
+      if (this.eventCooldown > 0) {
+        this.eventCooldown--;
+      }
     },
   },
 });

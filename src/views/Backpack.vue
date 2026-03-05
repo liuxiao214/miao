@@ -44,7 +44,7 @@ const inventoryStore = useInventoryStore();
 const categories = [
   { id: 'all', name: '全部' },
   { id: 'food', name: '食物' },
-  { id: 'toy', name: '玩具' },
+  { id: 'toy', name: '情感陪伴' },
   { id: 'health', name: '医疗保健' },
   { id: 'cleaning', name: '清洁护理' },
   { id: 'maintenance', name: '环境维护' },
