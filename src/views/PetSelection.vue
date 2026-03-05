@@ -262,6 +262,55 @@ select:focus {
   box-shadow: 0 4px 8px rgba(139, 69, 19, 0.3);
 }
 
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .selection-container h1 {
+    font-size: 24px;
+  }
+  
+  .selection-container > p {
+    font-size: 14px;
+  }
+  
+  .form {
+    gap: 8px;
+    margin-top: 8px;
+  }
+  
+  .form label {
+    font-size: 14px;
+  }
+  
+  input {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+  
+  select {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+  
+  .options {
+    gap: 8px;
+  }
+  
+  .options button {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .action-buttons button {
+    width: 200px;
+  }
+}
+
 /* Big icon buttons for pet type */
 .pet-type-options {
   display: flex;

@@ -320,6 +320,72 @@ html, body {
   margin-top: 8px;
 }
 
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .selection-container h1 {
+    font-size: 24px;
+  }
+  
+  .selection-container > p {
+    font-size: 14px;
+  }
+  
+  .identity-row {
+    gap: 10px;
+    padding: 15px 0;
+  }
+  
+  .identity-row button {
+    min-width: 120px;
+    max-width: 150px;
+    padding: 12px;
+  }
+  
+  .icon {
+    font-size: 36px;
+    margin-bottom: 8px;
+  }
+  
+  .identity-row h2 {
+    font-size: 16px;
+  }
+  
+  .identity-row p {
+    font-size: 11px;
+  }
+  
+  .conditions-page {
+    padding: 15px 15px 20px;
+  }
+  
+  .condition-item {
+    padding: 15px;
+  }
+  
+  .condition-item h3 {
+    font-size: 16px;
+  }
+  
+  .condition-options {
+    gap: 10px;
+  }
+  
+  .condition-options button {
+    padding: 10px 15px;
+    font-size: 14px;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .action-buttons button {
+    width: 200px;
+  }
+}
+
 /* 条件选择界面样式 */
 .conditions-page {
   text-align: center;

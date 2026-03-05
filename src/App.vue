@@ -250,6 +250,8 @@ h1 {
   display: flex;
   gap: 15px;
   margin-top: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .action-buttons button {
@@ -265,6 +267,44 @@ h1 {
   font-size: 16px;
   width: 100px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .action-buttons {
+    gap: 10px;
+  }
+  
+  .action-buttons button {
+    padding: 12px 16px;
+    font-size: 14px;
+    width: 80px;
+  }
+  
+  .action-buttons .icon {
+    font-size: 24px;
+    margin-bottom: 6px;
+  }
+  
+  .pet-info {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .pet-stats {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  
+  .stat-item {
+    margin: 0;
+  }
+  
+  .daily-summary {
+    max-width: 100%;
+  }
 }
 
 .action-buttons button:hover {
