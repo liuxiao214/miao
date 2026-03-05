@@ -73,6 +73,38 @@ export const items = {
     price: 50,
     uses: 20,
   },
+  pet_comb: {
+    id: 'pet_comb',
+    name: '宠物梳子',
+    type: 'consumable',
+    price: 30,
+    uses: 50,
+    effects: { happiness: 8, health: 2 },
+  },
+  disinfectant: {
+    id: 'disinfectant',
+    name: '消毒液',
+    type: 'consumable',
+    price: 60,
+    uses: 30,
+    effects: { health: 5 },
+  },
+  pee_pads: {
+    id: 'pee_pads',
+    name: '尿垫',
+    type: 'consumable',
+    price: 25,
+    uses: 50,
+    effects: { happiness: 5 },
+  },
+  pet_cleaner: {
+    id: 'pet_cleaner',
+    name: '宠物清洁剂',
+    type: 'consumable',
+    price: 45,
+    uses: 25,
+    effects: { happiness: 6, health: 3 },
+  },
 
   // --- 食物 (一次性使用) ---
   kitten_milk: {

@@ -15,6 +15,7 @@ export function createPet(details) {
     happiness: 80,
     hunger: 50,
     energy: 100,
+    intimacy: 0, // 亲密度，初始为0
 
     // --- 状态标签 ---
     isSick: false, // 是否生病

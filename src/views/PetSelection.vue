@@ -1,13 +1,14 @@
 <template>
   <div class="selection-container">
     <h1>领养你的新伙伴</h1>
+    <p>选择你喜欢的宠物，开始你的养宠之旅吧！</p>
     <div class="form">
       <!-- 来源 -->
       <label>它的来源是?</label>
       <div class="options">
         <button @click="petSource = 'stray'" :class="{ selected: petSource === 'stray' }">路边偶遇 (免费)</button>
         <button @click="petSource = 'friend'" :class="{ selected: petSource === 'friend' }">朋友赠送 (免费)</button>
-        <button @click="petSource = 'store'" :class="{ selected: petSource === 'store' }">宠物店 ($500)</button>
+        <button @click="petSource = 'store'" :class="{ selected: petSource === 'store' }">宠物店 (¥500)</button>
       </div>
 
       <!-- 类型 -->
@@ -65,14 +66,37 @@
       </select>
 
       <!-- 年龄和性别 -->
-      <div class="inline-options">
-        <label>年龄: </label>
-        <button @click="petAge = 'cub'" :class="{ selected: petAge === 'cub' }">幼崽</button>
-        <button @click="petAge = 'adult'" :class="{ selected: petAge === 'adult' }">成年</button>
-        <label style="margin-left: 20px;">性别: </label>
-        <button @click="petGender = 'unknown'" :class="{ selected: petGender === 'unknown' }">未知</button>
-        <button @click="petGender = 'male'" :class="{ selected: petGender === 'male' }">雄性</button>
-        <button @click="petGender = 'female'" :class="{ selected: petGender === 'female' }">雌性</button>
+      <div class="age-gender-container">
+        <div class="option-group">
+          <label>年龄:</label>
+          <div class="age-options">
+            <button @click="petAge = 'cub'" :class="{ selected: petAge === 'cub' }">
+              <span class="icon">🐣</span>
+              <span>幼崽</span>
+            </button>
+            <button @click="petAge = 'adult'" :class="{ selected: petAge === 'adult' }">
+              <span class="icon">🐾</span>
+              <span>成年</span>
+            </button>
+          </div>
+        </div>
+        <div class="option-group">
+          <label>性别:</label>
+          <div class="gender-options">
+            <button @click="petGender = 'unknown'" :class="{ selected: petGender === 'unknown' }">
+              <span class="icon">❓</span>
+              <span>未知</span>
+            </button>
+            <button @click="petGender = 'male'" :class="{ selected: petGender === 'male' }">
+              <span class="icon">♂️</span>
+              <span>雄性</span>
+            </button>
+            <button @click="petGender = 'female'" :class="{ selected: petGender === 'female' }">
+              <span class="icon">♀️</span>
+              <span>雌性</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- 名字 -->
@@ -80,7 +104,7 @@
       <input type="text" id="pet-name" v-model="petName" />
 
       <div class="action-buttons">
-        <button @click="goBack" class="back-btn">返回</button>
+        <button @click="goBack" class="back-btn">上一步</button>
         <button @click="confirmAdoption" class="confirm-btn">确认领养</button>
       </div>
     </div>
@@ -130,55 +154,258 @@ function confirmAdoption() {
 
 function goBack() {
   gameStore.setGameState('character_selection');
+  // 确保返回到条件选择界面
+  // 这里需要修改CharacterSelection组件的currentStep状态
+  // 由于我们无法直接修改另一个组件的状态，我们需要在gameStore中添加一个方法
+  // 或者通过事件总线等方式传递信息
+  // 暂时使用localStorage来传递状态
+  localStorage.setItem('characterSelectionStep', 'conditions');
 }
 </script>
 
 <style scoped>
 .selection-container {
   text-align: center;
+  min-height: 100vh;
+  padding: 30px 20px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  max-height: 100vh;
+  background: linear-gradient(135deg, #fff9e6 0%, #f5e6d3 100%);
 }
+
+.selection-container h1 {
+  color: #8B4513;
+  margin-bottom: 10px;
+  font-size: 32px;
+}
+
+.selection-container > p {
+  margin-bottom: 30px;
+  color: #666;
+  font-size: 16px;
+}
+
 .form {
   display: inline-flex;
   flex-direction: column;
-  gap: 15px;
-  margin-top: 20px;
+  gap: 10px;
+  margin-top: 10px;
+  max-width: 600px;
+  width: 100%;
 }
+
+.form label {
+  font-weight: 500;
+  color: #333;
+  font-size: 16px;
+  text-align: left;
+}
+
 input {
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+  padding: 12px 15px;
+  border-radius: 20px;
+  border: 1px solid #E8D5B7;
+  font-size: 16px;
+  transition: all 0.2s ease;
 }
+
+input:focus {
+  outline: none;
+  border-color: #8B4513;
+  box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.2);
+}
+
+select {
+  padding: 12px 15px;
+  border-radius: 20px;
+  border: 1px solid #E8D5B7;
+  font-size: 16px;
+  background-color: white;
+  transition: all 0.2s ease;
+}
+
+select:focus {
+  outline: none;
+  border-color: #8B4513;
+  box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.2);
+}
+
 .options {
   display: flex;
   justify-content: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
+
 .options button {
   padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  background-color: #E8D5B7;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  color: #333;
 }
+
+.options button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  background-color: #D4B996;
+}
+
 .options button.selected,
 .inline-options button.selected {
-  background-color: #2ecc71;
+  background-color: #8B4513;
   color: white;
-  border-color: #2ecc71;
+  box-shadow: 0 4px 8px rgba(139, 69, 19, 0.3);
 }
 
 /* Big icon buttons for pet type */
+.pet-type-options {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
 .pet-type-options button {
+  display: flex;
   flex-direction: column;
-  height: 100px;
-  width: 100px;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+  width: 120px;
   font-size: 16px;
+  border-radius: 20px;
+  background-color: white;
+  border: 2px solid #E8D5B7;
+  transition: all 0.2s ease;
 }
-.pet-type-options .icon {
-  font-size: 40px;
-  margin-bottom: 8px;
+
+.pet-type-options button:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  border-color: #8B4513;
 }
-.confirm-btn {
-  margin-top: 20px;
-  padding: 15px;
-  background-color: #3498db;
+
+.pet-type-options button.selected {
+  background-color: #8B4513;
+  border-color: #8B4513;
   color: white;
+}
+
+.pet-type-options .icon {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+.age-gender-container {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.option-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.option-group label {
+  display: block;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.age-options,
+.gender-options {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.age-options button,
+.gender-options button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 15px;
+  background-color: white;
+  border: 2px solid #E8D5B7;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  color: #333;
+  min-width: 80px;
+}
+
+.age-options button:hover,
+.gender-options button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border-color: #8B4513;
+}
+
+.age-options button.selected,
+.gender-options button.selected {
+  background-color: #8B4513;
+  border-color: #8B4513;
+  color: white;
+}
+
+.age-options .icon,
+.gender-options .icon {
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.back-btn {
+  flex: 1;
+  padding: 12px 20px;
+  border: 2px solid #E8D5B7;
+  border-radius: 15px;
+  background-color: white;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
   font-size: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.back-btn:hover {
+  transform: translateY(-5px);
+  border-color: #8B4513;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  background-color: #F5E6D3;
+}
+
+.confirm-btn {
+  flex: 1;
+  padding: 12px 20px;
+  border: 2px solid #E8D5B7;
+  border-radius: 15px;
+  background-color: white;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  font-size: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.confirm-btn:hover {
+  transform: translateY(-5px);
+  border-color: #8B4513;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  background-color: #F5E6D3;
 }
 </style>

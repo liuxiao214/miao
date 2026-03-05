@@ -15,6 +15,7 @@ export const useGameStore = defineStore('game', {
       day: 1,
       hour: 8,
     },
+    dailyInteractions: [], // 每日互动记录
   }),
 
   actions: {
@@ -43,6 +44,8 @@ export const useGameStore = defineStore('game', {
       if (this.gameTime.hour >= 24) {
         this.gameTime.hour = 0;
         this.gameTime.day++;
+        // 清空每日互动记录，准备新的一天
+        this.dailyInteractions = [];
       }
 
       // 随着时间流逝，宠物的状态会发生变化
@@ -79,7 +82,44 @@ export const useGameStore = defineStore('game', {
         }
       }
 
-      // --- 2. 处理物品消耗 ---
+      // --- 2. 增加亲密度 ---
+      let intimacyIncrease = 0;
+      if (itemConfig.type === 'food') {
+        // 食物的亲密度增加取决于宠物的饥饿程度
+        // 饥饿程度越低，亲密度增加越多
+        intimacyIncrease = Math.max(1, Math.floor((100 - this.pet.hunger) / 20) + 1);
+      } else if (itemConfig.type === 'toy') {
+        // 玩具的亲密度增加取决于宠物的心情和精力
+        // 心情越好，精力越充足，亲密度增加越多
+        const moodFactor = Math.floor(this.pet.happiness / 30) + 1;
+        const energyFactor = Math.floor(this.pet.energy / 40) + 1;
+        intimacyIncrease = Math.max(2, moodFactor + energyFactor);
+      } else if (itemConfig.type === 'health') {
+        // 医疗物品的亲密度增加取决于宠物的健康程度
+        // 健康程度越低，亲密度增加越多
+        intimacyIncrease = Math.max(1, Math.floor((100 - this.pet.health) / 25) + 1);
+      } else if (itemConfig.type === 'consumable') {
+        // 消耗品的亲密度增加
+        intimacyIncrease = 3;
+      }
+      
+      if (intimacyIncrease > 0) {
+        this.pet.intimacy += intimacyIncrease;
+        if (this.pet.intimacy > 100) {
+          this.pet.intimacy = 100;
+        }
+        
+        // 记录互动
+        this.dailyInteractions.push({
+          type: itemConfig.type,
+          name: itemConfig.name,
+          intimacy: intimacyIncrease,
+          day: this.gameTime.day,
+          hour: this.gameTime.hour
+        });
+      }
+
+      // --- 3. 处理物品消耗 ---
       if (itemConfig.single_use) {
         inventoryStore.removeItem(instanceId);
       } 
@@ -101,9 +141,9 @@ export const useGameStore = defineStore('game', {
         }
       }
 
-      // 使用后自动关闭背包
-      this.inventoryFilter = null;
-      this.setGameState('playing');
+      // 移除自动关闭背包的代码，允许连续使用物品
+      // this.inventoryFilter = null;
+      // this.setGameState('playing');
     },
 
     /**
@@ -148,6 +188,8 @@ export const useGameStore = defineStore('game', {
       this.setGameState('playing');
     },
 
+
+    
     /**
      * 重置游戏状态
      */
