@@ -15,11 +15,47 @@ export const useGameStore = defineStore('game', {
     gameTime: {
       day: 1,
       hour: 8,
+      month: 1, // 月份，从1开始
     },
     dailyInteractions: [], // 每日互动记录
     currentEvent: null, // 当前事件
+    savedEvent: null, // 保存的事件状态，用于从商店返回后恢复
     eventCooldown: 0, // 事件冷却时间（小时）
+    
+    // --- 成本数据属性 --- 
+    dailyExpenses: 0, // 当日总支出
+    monthlyExpenses: 0, // 当月总支出
+    timeInvestment: 0, // 当日时间投入（分钟）
+    monthlyBudget: 500, // 月度预算（可调整）
+    dailyExpensesLog: [], // 每日支出记录
+    monthlyExpensesLog: [], // 月度支出记录
+    timeInvestmentLog: [], // 时间投入记录（每次互动的时间）
+    
+    // --- 适配度数据属性 --- 
+    compatibility: 50, // 养宠者与宠物的适配度初始值（0-100）
+    compatibilityHistory: [], // 适配度变化历史
   }),
+  
+  getters: {
+    // 预算使用率计算
+    budgetUsageRate: (state) => {
+      if (state.monthlyBudget <= 0) return 0;
+      return Math.min(100, Math.round((state.monthlyExpenses / state.monthlyBudget) * 100));
+    },
+    
+    // 日均支出计算
+    averageDailyExpenses: (state) => {
+      if (state.gameTime.day <= 1) return state.dailyExpenses;
+      return Math.round(state.monthlyExpenses / state.gameTime.day);
+    },
+    
+    // 日均时间投入计算
+    averageDailyTime: (state) => {
+      if (state.gameTime.day <= 1) return state.timeInvestment;
+      const totalMinutes = state.timeInvestmentLog.reduce((sum, item) => sum + item.minutes, 0);
+      return Math.round(totalMinutes / state.gameTime.day);
+    },
+  },
 
   actions: {
     /**
@@ -47,18 +83,76 @@ export const useGameStore = defineStore('game', {
       if (this.gameTime.hour >= 24) {
         this.gameTime.hour = 0;
         this.gameTime.day++;
-        // 清空每日互动记录，准备新的一天
+        // 记录当天支出并重置
+        this.dailyExpensesLog.push({
+          day: this.gameTime.day - 1,
+          month: this.gameTime.month,
+          amount: this.dailyExpenses
+        });
+        // 清空每日互动记录和时间投入，准备新的一天
         this.dailyInteractions = [];
+        this.dailyExpenses = 0;
+        this.timeInvestment = 0;
+        
+        // 检查是否进入新的月份（30天为一个月）
+        if (this.gameTime.day > 30) {
+          this.gameTime.day = 1;
+          this.gameTime.month++;
+          // 记录当月支出并重置
+          this.monthlyExpensesLog.push({
+            month: this.gameTime.month - 1,
+            amount: this.monthlyExpenses
+          });
+          this.monthlyExpenses = 0;
+        }
       }
 
       // 随着时间流逝，宠物的状态会发生变化
       if (this.pet) {
-        this.pet.hunger -= 1; // 举例：每小时饥饿度减1
-        this.pet.energy -= 0.5; // 举例：每小时精力减0.5
-
-        // 确保数值不会低于0
+        // 判断是否处于休息时段（夜间10点至早上7点）
+        const isResting = this.gameTime.hour >= 22 || this.gameTime.hour < 7;
+        
+        // 基础状态变化
+        this.pet.hunger -= 1; // 每小时饥饿度减1
+        
+        // 精力变化：休息时段恢复精力，活跃时段消耗精力
+        if (isResting) {
+          this.pet.energy += 5; // 休息时每小时恢复5点精力
+        } else {
+          this.pet.energy -= 0.5; // 活跃时每小时消耗0.5点精力
+        }
+        
+        // 状态相互影响
+        // 饥饿度过低影响健康和心情
+        if (this.pet.hunger < 30) {
+          this.pet.health -= 0.5;
+          this.pet.happiness -= 0.5;
+        }
+        
+        // 精力过低影响心情
+        if (this.pet.energy < 20) {
+          this.pet.happiness -= 0.5;
+        }
+        
+        // 健康状况影响心情
+        if (this.pet.health < 40) {
+          this.pet.happiness -= 0.5;
+        }
+        
+        // 随机波动（模拟自然恢复或突发情况）
+        if (Math.random() < 0.1) { // 10%概率
+          this.pet.happiness += Math.random() * 2 - 1; // -1到1的随机变化
+        }
+        
+        // 确保数值在合理范围内
         if (this.pet.hunger < 0) this.pet.hunger = 0;
+        if (this.pet.hunger > 100) this.pet.hunger = 100;
         if (this.pet.energy < 0) this.pet.energy = 0;
+        if (this.pet.energy > 100) this.pet.energy = 100;
+        if (this.pet.happiness < 0) this.pet.happiness = 0;
+        if (this.pet.health < 0) this.pet.health = 0;
+        if (this.pet.happiness > 100) this.pet.happiness = 100;
+        if (this.pet.health > 100) this.pet.health = 100;
       }
 
       // 更新事件冷却时间
@@ -79,13 +173,36 @@ export const useGameStore = defineStore('game', {
 
       const itemConfig = items[itemInstance.itemId];
       if (!itemConfig) return;
+      
+      // 记录时间投入（根据物品类型不同，时间投入不同）
+      let timeSpent = 0;
+      if (itemConfig.type === 'food') {
+        timeSpent = 5; // 喂食5分钟
+      } else if (itemConfig.type === 'toy') {
+        timeSpent = 15; // 玩耍15分钟
+      } else if (itemConfig.type === 'health') {
+        timeSpent = 10; // 医疗处理10分钟
+      } else if (itemConfig.type === 'cleaning' || itemConfig.type === 'maintenance') {
+        timeSpent = 20; // 清洁/维护20分钟
+      } else if (itemConfig.type === 'necessity') {
+        timeSpent = 8; // 日常用品使用8分钟
+      }
+      
+      this.timeInvestment += timeSpent;
+      this.timeInvestmentLog.push({
+        day: this.gameTime.day,
+        hour: this.gameTime.hour,
+        itemType: itemConfig.type,
+        itemName: itemConfig.name,
+        minutes: timeSpent
+      });
 
       // --- 1. 应用物品效果 ---
       if (itemConfig.effects) {
         for (const effect in itemConfig.effects) {
           this.pet[effect] += itemConfig.effects[effect];
           // 确保数值不超上限
-          if (this.pet[effect] > 100 && effect !== 'energy') {
+          if (this.pet[effect] > 100) {
             this.pet[effect] = 100;
           }
         }
@@ -143,8 +260,8 @@ export const useGameStore = defineStore('game', {
           inventoryStore.updateItem(instanceId, { uses: newUses });
         }
       } 
-      else if (itemInstance.durability && ['toy'].includes(itemConfig.type)) {
-        // 仅当物品是玩具等类型时，使用才消耗耐久
+      else if (itemInstance.durability) {
+        // 任何具有耐久度的物品使用后都会消耗耐久
         const newDurability = itemInstance.durability - 1;
         if (newDurability <= 0) {
           inventoryStore.removeItem(instanceId);
@@ -156,6 +273,9 @@ export const useGameStore = defineStore('game', {
       // 移除自动关闭背包的代码，允许连续使用物品
       // this.inventoryFilter = null;
       // this.setGameState('playing');
+      
+      // 更新适配度
+      this.updateCompatibility();
     },
 
     /**
@@ -167,6 +287,9 @@ export const useGameStore = defineStore('game', {
 
       if (this.player.money >= item.price) {
         this.player.money -= item.price;
+        // 记录支出
+        this.dailyExpenses += item.price;
+        this.monthlyExpenses += item.price;
         const inventoryStore = useInventoryStore();
         inventoryStore.addItem(itemId);
       } else {
@@ -178,6 +301,16 @@ export const useGameStore = defineStore('game', {
      * 设置游戏阶段
      */
     setGameState(newState) {
+      // 如果当前是事件状态且要进入购物状态，保存当前事件
+      if (this.gameState === 'event' && newState === 'shopping') {
+        this.savedEvent = this.currentEvent;
+      }
+      // 如果当前是购物状态且要退出到游戏中，恢复事件
+      else if (this.gameState === 'shopping' && newState === 'playing' && this.savedEvent) {
+        this.currentEvent = this.savedEvent;
+        this.savedEvent = null;
+        newState = 'event'; // 恢复到事件状态
+      }
       this.gameState = newState;
     },
 
@@ -191,6 +324,9 @@ export const useGameStore = defineStore('game', {
       }
 
       this.player.money -= totalCost;
+      // 记录支出
+      this.dailyExpenses += totalCost;
+      this.monthlyExpenses += totalCost;
 
       const inventoryStore = useInventoryStore();
       for (const itemId in cart) {
@@ -241,6 +377,7 @@ export const useGameStore = defineStore('game', {
      */
     closeEvent() {
       this.currentEvent = null;
+      this.savedEvent = null;
       this.gameState = 'playing';
     },
 
@@ -251,6 +388,51 @@ export const useGameStore = defineStore('game', {
       if (this.eventCooldown > 0) {
         this.eventCooldown--;
       }
+    },
+    
+    /**
+     * 更新养宠者与宠物的适配度
+     */
+    updateCompatibility() {
+      if (!this.pet) return;
+      
+      let compatibilityScore = this.compatibility;
+      
+      // 基础适配度计算（基于宠物当前状态）
+      const healthFactor = this.pet.health * 0.3; // 健康占30%
+      const happinessFactor = this.pet.happiness * 0.25; // 心情占25%
+      const intimacyFactor = this.pet.intimacy * 0.25; // 亲密度占25%
+      const basicScore = healthFactor + happinessFactor + intimacyFactor;
+      
+      // 计算互动频率和时间投入的影响
+      const avgDailyInteractions = this.dailyExpensesLog.length > 0 ? 
+        this.dailyInteractions.length : 1;
+      const avgDailyTime = this.averageDailyTime;
+      
+      // 根据互动情况调整适配度
+      if (this.dailyInteractions.length > avgDailyInteractions + 2) {
+        compatibilityScore += 2; // 互动频繁，适配度增加
+      } else if (this.dailyInteractions.length < Math.max(1, avgDailyInteractions - 2)) {
+        compatibilityScore -= 2; // 互动不足，适配度减少
+      }
+      
+      // 根据时间投入调整适配度
+      if (this.timeInvestment > avgDailyTime + 10) {
+        compatibilityScore += 1; // 时间投入多，适配度增加
+      } else if (this.timeInvestment < Math.max(5, avgDailyTime - 10)) {
+        compatibilityScore -= 1; // 时间投入少，适配度减少
+      }
+      
+      // 确保适配度在合理范围内
+      compatibilityScore = Math.max(0, Math.min(100, compatibilityScore));
+      
+      // 更新适配度并记录历史
+      this.compatibility = Math.round(compatibilityScore);
+      this.compatibilityHistory.push({
+        day: this.gameTime.day,
+        month: this.gameTime.month,
+        value: this.compatibility
+      });
     },
   },
 });

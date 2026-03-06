@@ -5,7 +5,7 @@ export const items = {
     name: '粮碗',
     type: 'necessity',
     price: 30,
-    durability: 100,
+    uses: 100,
     essential: true,
   },
   water_bowl: {
@@ -13,7 +13,7 @@ export const items = {
     name: '水碗',
     type: 'necessity',
     price: 30,
-    durability: 100,
+    uses: 100,
     essential: true,
   },
   cat_litter_box: {
@@ -21,7 +21,7 @@ export const items = {
     name: '猫砂盆',
     type: 'necessity',
     price: 80,
-    durability: 100,
+    uses: 100,
     essential: true,
   },
   pet_bed: {
@@ -29,7 +29,7 @@ export const items = {
     name: '宠物窝',
     type: 'necessity',
     price: 100,
-    durability: 100,
+    uses: 100,
     essential: true,
   },
   leash: {
@@ -37,7 +37,7 @@ export const items = {
     name: '牵引绳',
     type: 'necessity',
     price: 60,
-    durability: 100,
+    uses: 100,
     essential: true,
   },
   pet_carrier: {
@@ -112,8 +112,8 @@ export const items = {
     name: '幼猫/犬奶粉',
     type: 'food',
     price: 50,
-    effects: { hunger: 30, health: 2 },
-    single_use: true,
+    effects: { hunger: 30, health: 2, energy: 5 },
+    uses: 20,
     essential: true,
   },
   canned_food: {
@@ -121,7 +121,7 @@ export const items = {
     name: '主食罐头',
     type: 'food',
     price: 15,
-    effects: { hunger: 20, happiness: 5 },
+    effects: { hunger: 20, happiness: 5, energy: 3 },
     single_use: true,
   },
   treats: {
@@ -129,7 +129,7 @@ export const items = {
     name: '零食冻干',
     type: 'food',
     price: 40,
-    effects: { happiness: 15 },
+    effects: { happiness: 15, energy: 2 },
     uses: 20, // 改为20次
   },
   food_generic: {
@@ -140,6 +140,7 @@ export const items = {
     effects: {
       hunger: 15,
       happiness: 2,
+      energy: 5,
     },
     uses: 15, // 改为15次
     essential: true,
@@ -153,6 +154,7 @@ export const items = {
       hunger: 25,
       happiness: 5,
       health: 1,
+      energy: 8,
     },
     uses: 25, // 改为25次
   },

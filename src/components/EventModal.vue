@@ -71,6 +71,13 @@ function handleOption(option) {
     return;
   }
 
+  // 如果是跳转到商店的选项
+  if (option.jumpToStore) {
+    // 跳转到商店，不关闭事件
+    gameStore.setGameState('shopping');
+    return;
+  }
+
   // 扣除费用
   if (option.cost) {
     gameStore.player.money -= option.cost;

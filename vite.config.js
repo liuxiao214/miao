@@ -53,13 +53,7 @@ export default defineConfig({
   },
   optimizeDeps: {
     esbuildOptions: {
-      target: 'es2015',
-      supported: {
-        'arrow-functions': true,
-        'async-await': true,
-        'const': true,
-        'destructuring': true
-      }
+      target: 'es2015'
     }
   },
   esbuild: {
