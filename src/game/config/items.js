@@ -45,7 +45,7 @@ export const items = {
     name: '航空箱/外出包',
     type: 'necessity',
     price: 150,
-    durability: 100,
+    uses: 50,
     essential: true,
   },
 
@@ -53,7 +53,7 @@ export const items = {
   cat_litter: {
     id: 'cat_litter',
     name: '猫砂',
-    type: 'consumable',
+    type: 'cleaning',
     price: 40,
     uses: 10,
     essential: true,
@@ -61,7 +61,7 @@ export const items = {
   poop_bags: {
     id: 'poop_bags',
     name: '拾便袋',
-    type: 'consumable',
+    type: 'cleaning',
     price: 15,
     uses: 50,
     essential: true,
@@ -69,14 +69,14 @@ export const items = {
   pet_shampoo: {
     id: 'pet_shampoo',
     name: '宠物香波',
-    type: 'consumable',
+    type: 'cleaning',
     price: 50,
     uses: 20,
   },
   pet_comb: {
     id: 'pet_comb',
     name: '宠物梳子',
-    type: 'consumable',
+    type: 'cleaning',
     price: 30,
     uses: 50,
     effects: { happiness: 8, health: 2 },
@@ -84,7 +84,7 @@ export const items = {
   disinfectant: {
     id: 'disinfectant',
     name: '消毒液',
-    type: 'consumable',
+    type: 'maintenance',
     price: 60,
     uses: 30,
     effects: { health: 5 },
@@ -92,7 +92,7 @@ export const items = {
   pee_pads: {
     id: 'pee_pads',
     name: '尿垫',
-    type: 'consumable',
+    type: 'maintenance',
     price: 25,
     uses: 50,
     effects: { happiness: 5 },
@@ -100,7 +100,7 @@ export const items = {
   pet_cleaner: {
     id: 'pet_cleaner',
     name: '宠物清洁剂',
-    type: 'consumable',
+    type: 'maintenance',
     price: 45,
     uses: 25,
     effects: { happiness: 6, health: 3 },

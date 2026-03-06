@@ -107,9 +107,12 @@ export const useGameStore = defineStore('game', {
         // 医疗物品的亲密度增加取决于宠物的健康程度
         // 健康程度越低，亲密度增加越多
         intimacyIncrease = Math.max(1, Math.floor((100 - this.pet.health) / 25) + 1);
-      } else if (itemConfig.type === 'consumable') {
-        // 消耗品的亲密度增加
+      } else if (itemConfig.type === 'cleaning' || itemConfig.type === 'maintenance') {
+        // 清洁和维护物品的亲密度增加
         intimacyIncrease = 3;
+      } else if (itemConfig.type === 'necessity') {
+        // 生活用品的亲密度增加
+        intimacyIncrease = 2;
       }
       
       if (intimacyIncrease > 0) {

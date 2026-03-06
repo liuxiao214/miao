@@ -48,7 +48,6 @@ const categories = [
   { id: 'health', name: '医疗保健' },
   { id: 'cleaning', name: '清洁护理' },
   { id: 'maintenance', name: '环境维护' },
-  { id: 'consumable', name: '消耗品' },
   { id: 'necessity', name: '生活用品' },
 ];
 
@@ -64,7 +63,7 @@ const filteredItems = computed(() => {
     if (currentCategory.value === 'all') {
       return true;
     } else if (currentCategory.value === 'cleaning') {
-      return ['pet_shampoo', 'pet_comb', 'flea_treatment', 'cat_litter', 'poop_bags'].includes(itemInstance.itemId);
+      return ['pet_shampoo', 'pet_comb', 'cat_litter', 'poop_bags'].includes(itemInstance.itemId);
     } else if (currentCategory.value === 'maintenance') {
       return ['disinfectant', 'pee_pads', 'pet_cleaner', 'cat_litter'].includes(itemInstance.itemId);
     } else {
@@ -74,7 +73,7 @@ const filteredItems = computed(() => {
 });
 
 function isUsable(itemConfig) {
-  return ['food', 'toy', 'health', 'consumable'].includes(itemConfig.type);
+  return ['food', 'toy', 'health', 'consumable', 'necessity', 'cleaning', 'maintenance'].includes(itemConfig.type);
 }
 
 function closeBackpack() {

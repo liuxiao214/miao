@@ -39,9 +39,10 @@ const categories = [
   { id: 'all', name: '全部' },
   { id: 'food', name: '食物' },
   { id: 'toy', name: '情感陪伴' },
-  { id: 'necessity', name: '生活用品' },
-  { id: 'consumable', name: '消耗品' },
   { id: 'health', name: '医疗保健' },
+  { id: 'cleaning', name: '清洁护理' },
+  { id: 'maintenance', name: '环境维护' },
+  { id: 'necessity', name: '生活用品' },
 ];
 
 const currentCategory = ref('all');
@@ -49,8 +50,13 @@ const currentCategory = ref('all');
 const filteredItems = computed(() => {
   if (currentCategory.value === 'all') {
     return Object.values(items);
+  } else if (currentCategory.value === 'cleaning') {
+    return Object.values(items).filter(item => item.type === 'cleaning');
+  } else if (currentCategory.value === 'maintenance') {
+    return Object.values(items).filter(item => item.type === 'maintenance');
+  } else {
+    return Object.values(items).filter(item => item.type === currentCategory.value);
   }
-  return Object.values(items).filter(item => item.type === currentCategory.value);
 });
 
 </script>
@@ -179,6 +185,22 @@ h1 {
   background-color: #FFDC77;
 }
 
+.category-tabs button.category-cleaning {
+  background-color: #FF9FF3;
+}
+
+.category-tabs button.category-cleaning:hover {
+  background-color: #FF85E6;
+}
+
+.category-tabs button.category-maintenance {
+  background-color: #54A0FF;
+}
+
+.category-tabs button.category-maintenance:hover {
+  background-color: #3D8BFF;
+}
+
 .item-card {
   border: 1px solid #E8D5B7;
   padding: 15px;
@@ -277,5 +299,13 @@ button:hover {
 
 .item-type-necessity {
   border-left: 4px solid #FFEAA7;
+}
+
+.item-type-cleaning {
+  border-left: 4px solid #FF9FF3;
+}
+
+.item-type-maintenance {
+  border-left: 4px solid #54A0FF;
 }
 </style>
